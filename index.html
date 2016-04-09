@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Dude Where's my Car?</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+<!-- Include jQuery Mobile stylesheets -->
+<link rel="stylesheet" href="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.css">
+<!-- Include the jQuery library -->
+<script src="http://code.jquery.com/jquery-1.11.3.min.js"></script>
+<!-- Include the jQuery Mobile library -->
+<script src="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.js"></script>
+<script type="text/javascript" charset="utf-8" src="cordova.js"></script>
+<script type="text/javascript" charset="utf-8">
+  document.addEventListener("deviceready", onDeviceReady, false);
+
+  function onDeviceReady() { 
+  		checkConnection(); 
+        if(localStorage.length != 0)
+        {
+      		var getCarAddr = window.localStorage.getItem('Address');
+        	var getCarSt = window.localStorage.getItem('Street');
+        	document.getElementById("output").innerHTML = "Address: " + getCarAddr + "<br/>Street: " + getCarSt;
+        }
+        else
+        {  	  
+          navigator.notification.prompt(
+        'Please enter the address of your car',  // message
+        onPrompt,                  // callback to invoke
+        'Enter the Address',            // title
+        ['Ok','Exit'],             // buttonLabels
+        'Car Address'                 // defaultText
+   		 );
+         
+       	 navigator.notification.prompt(
+        'Please enter the nearest major street of your car',  // message
+        onPrompt2,                  // callback to invoke
+        'Enter the Street',            // title
+        ['Ok','Exit'],             // buttonLabels
+        'Car Street'                 // defaultText
+   		 );
+ 		var getCarAddr = window.localStorage.getItem('Address');
+       	var getCarSt = window.localStorage.getItem('Street');
+        	document.getElementById("output").innerHTML = "Address: " + getCarAddr + "<br/>Street: " + getCarSt; 
+        }
+    }
+
+    function checkConnection()
+    {
+    	var networkState = navigator.network.connection.type;
+        var states = {};
+        states[Connection.UNKNOWN]  = 'Unknown connection';
+        states[Connection.ETHERNET] = 'Ethernet connection';
+        states[Connection.WIFI]     = 'WiFi connection';
+        states[Connection.CELL_2G]  = 'Cell 2G connection';
+        states[Connection.CELL_3G]  = 'Cell 3G connection';
+        states[Connection.CELL_4G]  = 'Cell 4G connection';
+        states[Connection.NONE]     = 'No network connection';
+
+        var networkStat = states[networkState];
+        window.localStorage.setItem('connection', networkState);
+    }
+
+    function onPrompt2(result)
+    { 
+    	if(result.input1 != null)
+    	{ 
+    		window.localStorage.setItem('Street', result.input1); 
+    	}
+    }
+
+    function onPrompt(result)
+    {  
+    	if(result.input1 != null)
+        {
+        	window.localStorage.setItem('Address', result.input1); 
+       	}
+    } 
+    function refresh()
+    {
+		if(localStorage.length != 0)
+        {
+      		var getCarAddr = window.localStorage.getItem('Address');
+        	var getCarSt = window.localStorage.getItem('Street');
+        	document.getElementById("output").innerHTML = "Address: " + getCarAddr + "<br/>Street: " + getCarSt;
+        }
+    }
+
+    function another()
+    {
+    	window.localStorage.clear();
+    	navigator.notification.prompt(
+        'Please enter the address of your car',  // message
+        onPrompt,                  // callback to invoke
+        'Enter the Address',            // title
+        ['Ok','Exit'],             // buttonLabels
+        'Car Address'                 // defaultText
+    	); 
+        	
+       	 navigator.notification.prompt(
+        'Please enter the nearest major street of your car',  // message
+        onPrompt2,                  // callback to invoke
+        'Enter the Street',            // title
+        ['Ok','Exit'],             // buttonLabels
+        'Car Street'                 // defaultText
+    	);  
+    }
+</script>
+<style type="text/css">
+	#output
+	{
+		width: 300px;
+		height: 150px;
+		position: fixed;
+		top: 50%;
+		left: 50%;
+		margin-top: -125px;
+		margin-left: -150px;
+		text-align: center;
+		padding: 10px;
+		background-color: white;
+		border-radius: 15px;
+		color: black;
+	}
+</style>
+</head>
+<body>
+<div data-role="page" data-theme="b">
+
+  <div data-role="header">
+    <h1 style="width:50%; text-align: center; position: fixed">Dude Where's My Car</h1>
+    <img src="logo.png" style="opacity:0.6">
+  </div>
+
+  <div data-role="main" class="ui-content">
+   <div id="output"></div> 
+   <br/>
+   <br/><br/>
+   <button style="background-color:pink; font-size:15px; margin-top: 50px; width: 100%;" onclick="refresh();">Refresh</button>
+   <button style="background-color:pink; font-size:15px; margin-top: 10px; width: 100%;" onclick="another();">Dude, remember another parked location</button>
+  </div>
+ 
+
+</div>
+
+</body>
+</html>
